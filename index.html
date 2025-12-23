@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <title>Paper Demo – Investigating Faithfulness in Large Audio Language Models</title>
@@ -58,7 +59,7 @@
       color: #222;
       text-decoration: none;
       cursor: pointer;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
 
     .pill:hover {
@@ -82,7 +83,7 @@
       background: #fff;
       border-radius: 10px;
       padding: 1rem 1.2rem;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
     }
 
     .section h2 {
@@ -121,8 +122,13 @@
       cursor: pointer;
     }
 
-    .copy-btn:hover { background: #f0f0f0; }
-    .copy-btn:active { transform: translateY(1px); }
+    .copy-btn:hover {
+      background: #f0f0f0;
+    }
+
+    .copy-btn:active {
+      transform: translateY(1px);
+    }
 
     /* TOC */
     .toc-list {
@@ -141,7 +147,9 @@
       text-decoration: none;
     }
 
-    .toc-list a:hover { text-decoration: underline; }
+    .toc-list a:hover {
+      text-decoration: underline;
+    }
 
     /* Accordion */
     .accordion {
@@ -153,7 +161,7 @@
     .accordion-item {
       border-radius: 12px;
       background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
       overflow: hidden;
       border: 1px solid #eee;
     }
@@ -172,7 +180,9 @@
       transition: background 0.15s ease;
     }
 
-    .accordion-header:hover { background: #eef4ff; }
+    .accordion-header:hover {
+      background: #eef4ff;
+    }
 
     .accordion-header .label {
       display: inline-flex;
@@ -195,11 +205,30 @@
     }
 
     /* Different icon color themes per strategy (optional) */
-    .icon-warn { background:#fff2e8; border-color:#ffd7bd; }
-    .icon-para { background:#eafff2; border-color:#c8f2da; }
-    .icon-early { background:#f3e8ff; border-color:#e2ccff; }
-    .icon-filler { background:#fffbe6; border-color:#fff0b3; }
-    .icon-random { background:#e8fbff; border-color:#bfefff; }
+    .icon-warn {
+      background: #fff2e8;
+      border-color: #ffd7bd;
+    }
+
+    .icon-para {
+      background: #eafff2;
+      border-color: #c8f2da;
+    }
+
+    .icon-early {
+      background: #f3e8ff;
+      border-color: #e2ccff;
+    }
+
+    .icon-filler {
+      background: #fffbe6;
+      border-color: #fff0b3;
+    }
+
+    .icon-random {
+      background: #e8fbff;
+      border-color: #bfefff;
+    }
 
     .accordion-header .chevron {
       font-size: 0.95rem;
@@ -218,7 +247,9 @@
       border-top: 1px solid #eaeaea;
     }
 
-    .accordion-panel.open { display: block; }
+    .accordion-panel.open {
+      display: block;
+    }
 
     .strategy-desc {
       font-size: 0.92rem;
@@ -302,11 +333,18 @@
     }
 
     @media (max-width: 640px) {
-      .paper-title { font-size: 1.5rem; }
-      .strategy-icon { width: 32px; height: 32px; }
+      .paper-title {
+        font-size: 1.5rem;
+      }
+
+      .strategy-icon {
+        width: 32px;
+        height: 32px;
+      }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <header>
@@ -317,7 +355,8 @@
         <a class="pill primary" href="https://arxiv.org/pdf/2509.22363" target="_blank" rel="noopener noreferrer">
           📄 Paper (arXiv PDF)
         </a>
-        <a class="pill primary" href="https://github.com/lovenya/Measuring-Faithfulness-of-CoT-Reasoning-LALMs" target="_blank" rel="noopener noreferrer">
+        <a class="pill primary" href="https://github.com/lovenya/Measuring-Faithfulness-of-CoT-Reasoning-LALMs"
+          target="_blank" rel="noopener noreferrer">
           💻 Code
         </a>
         <a class="pill" href="#abstract">📝 Abstract</a>
@@ -329,12 +368,18 @@
     <section class="section" id="abstract">
       <h2>📝 Abstract</h2>
       <p>
-        Faithfulness measures whether chain-of-thought (CoT) representations accurately reflect a model's decision process and can be used as reliable explanations.
-        Prior work has shown that CoTs from text-based LLMs are often unfaithful. This question has not been explored for large audio-language models (LALMs), where
-        faithfulness is critical for safety-sensitive applications. Reasoning in LALMs is also more challenging, as models must first extract relevant clues from audio
-        before reasoning over them. In this paper, we investigate the faithfulness of CoTs produced by several LALMs by applying targeted interventions, including
-        paraphrasing, filler token injection, early answering, and introducing mistakes, on two challenging reasoning datasets: SAKURA and MMAR. After going through
-        the aforementioned interventions across several datasets and tasks, our experiments suggest that LALMs generally produce CoTs that appear to be faithful to
+        Faithfulness measures whether chain-of-thought (CoT) representations accurately reflect a model's decision
+        process and can be used as reliable explanations.
+        Prior work has shown that CoTs from text-based LLMs are often unfaithful. This question has not been explored
+        for large audio-language models (LALMs), where
+        faithfulness is critical for safety-sensitive applications. Reasoning in LALMs is also more challenging, as
+        models must first extract relevant clues from audio
+        before reasoning over them. In this paper, we investigate the faithfulness of CoTs produced by several LALMs by
+        applying targeted interventions, including
+        paraphrasing, filler token injection, early answering, and introducing mistakes, on two challenging reasoning
+        datasets: SAKURA and MMAR. After going through
+        the aforementioned interventions across several datasets and tasks, our experiments suggest that LALMs generally
+        produce CoTs that appear to be faithful to
         their underlying decision processes.
       </p>
     </section>
@@ -384,7 +429,8 @@
 
           <div class="accordion-panel">
             <p class="strategy-desc">
-              To assess whether the model relies on the semantic content of the CoT, we incrementally introduce mistakes into the reasoning. 
+              To assess whether the model relies on the semantic content of the CoT, we incrementally introduce mistakes
+              into the reasoning.
             </p>
 
             <div class="figures-grid">
@@ -410,7 +456,8 @@
                   <div class="figure-title">AudioFlamingo</div>
                   <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
                 </div>
-                <img src="figures/adding_mistake_audioflamingo.png" alt="Adding mistakes – AudioFlamingo" />
+                <img src="figures/cross_dataset_adding_mistakes_flamingo-restricted.png"
+                  alt="Adding mistakes – AudioFlamingo" />
               </div>
             </div>
           </div>
@@ -428,7 +475,8 @@
 
           <div class="accordion-panel">
             <p class="strategy-desc">
-              To test whether CoTs contain hidden information encoded in their phrasing, we paraphrase each CoT using a large language model while preserving the semantic content of the CoT. 
+              To test whether CoTs contain hidden information encoded in their phrasing, we paraphrase each CoT using a
+              large language model while preserving the semantic content of the CoT.
             </p>
 
             <div class="figures-grid">
@@ -453,7 +501,8 @@
                   <div class="figure-title">AudioFlamingo</div>
                   <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
                 </div>
-                <img src="figures/paraphrasing_audioflamingo.png" alt="Paraphrasing – AudioFlamingo" />
+                <img src="figures/cross_dataset_paraphrasing_flamingo-restricted.png"
+                  alt="Paraphrasing – AudioFlamingo" />
               </div>
             </div>
           </div>
@@ -469,7 +518,8 @@
 
           <div class="accordion-panel">
             <p class="strategy-desc">
-              To assess whether the model relies on the semantic content of the CoT representations, we replace a given percentage of CoT tokens with filler tokens ("...").
+              To assess whether the model relies on the semantic content of the CoT representations, we replace a given
+              percentage of CoT tokens with filler tokens ("...").
             </p>
 
             <div class="figures-grid">
@@ -494,7 +544,8 @@
                   <div class="figure-title">AudioFlamingo</div>
                   <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
                 </div>
-                <img src="figures/strategy3_audioflamingo.png" alt="Strategy 3 – AudioFlamingo" />
+                <img src="figures/cross_dataset_random_partial_filler_text_flamingo-restricted.png"
+                  alt="Strategy 3 – AudioFlamingo" />
               </div>
             </div>
           </div>
@@ -512,7 +563,8 @@
 
           <div class="accordion-panel">
             <p class="strategy-desc">
-              To test whether accuracy gains of CoT originate from post-hoc reasoning, we truncate the CoT and prompt the model to answer using only the partial reasoning.
+              To test whether accuracy gains of CoT originate from post-hoc reasoning, we truncate the CoT and prompt
+              the model to answer using only the partial reasoning.
             </p>
 
             <div class="figures-grid">
@@ -538,7 +590,8 @@
                   <div class="figure-title">AudioFlamingo</div>
                   <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
                 </div>
-                <img src="figures/strategy3_audioflamingo.png" alt="Strategy 3 – AudioFlamingo" />
+                <img src="figures\cross_dataset_early_answering_flamingo-restricted.png"
+                  alt="Strategy 3 – AudioFlamingo" />
 
               </div>
             </div>
@@ -583,4 +636,5 @@
     });
   </script>
 </body>
+
 </html>
