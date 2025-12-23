@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Paper Demo – Investigating Faithfulness in Large Audio Language Models</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f7f7f7;
+            color: #222;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem 1rem 2rem;
+        }
+
+        header {
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .paper-title {
+            font-size: 1.95rem;
+            margin: 0 0 0.35rem 0;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+        }
+
+        .paper-authors {
+            font-size: 0.98rem;
+            color: #555;
+            margin-bottom: 0.6rem;
+        }
+
+        .quickbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.7rem;
+            border-radius: 999px;
+            border: 1px solid #d6d6d6;
+            background: #fff;
+            font-size: 0.88rem;
+            color: #222;
+            text-decoration: none;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+        }
+
+        .pill:hover {
+            background: #f0f6ff;
+            border-color: #c6d8ff;
+        }
+
+        .pill.primary {
+            background: #0b5fff;
+            color: #fff;
+            border-color: #0b5fff;
+        }
+
+        .pill.primary:hover {
+            background: #0a53de;
+            border-color: #0a53de;
+        }
+
+        .section {
+            margin-bottom: 1.6rem;
+            background: #fff;
+            border-radius: 10px;
+            padding: 1rem 1.2rem;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .section h2 {
+            font-size: 1.25rem;
+            margin: 0 0 0.6rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-weight: 700;
+        }
+
+        /* Bib box */
+        .bibtex-container {
+            position: relative;
+        }
+
+        .bibtex-box {
+            width: 100%;
+            min-height: 120px;
+            font-family: "SFMono-Regular", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.85rem;
+            padding: 0.75rem;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            background: #fdfdfd;
+            resize: vertical;
+        }
+
+        .copy-btn {
+            margin-top: 0.55rem;
+            padding: 0.4rem 0.85rem;
+            font-size: 0.88rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background: #f0f0f0;
+        }
+
+        .copy-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* TOC */
+        .toc-list {
+            list-style: decimal;
+            padding-left: 1.25rem;
+            margin: 0.35rem 0 0.5rem;
+        }
+
+        .toc-list li {
+            margin-bottom: 0.3rem;
+            font-size: 0.98rem;
+        }
+
+        .toc-list a {
+            color: #0b5fff;
+            text-decoration: none;
+        }
+
+        .toc-list a:hover {
+            text-decoration: underline;
+        }
+
+        /* Accordion */
+        .accordion {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .accordion-item {
+            border-radius: 12px;
+            background: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .accordion-header {
+            width: 100%;
+            text-align: left;
+            padding: 0.8rem 1rem;
+            border: none;
+            background: #f6f6f6;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 1rem;
+            transition: background 0.15s ease;
+        }
+
+        .accordion-header:hover {
+            background: #eef4ff;
+        }
+
+        .accordion-header .label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            font-weight: 700;
+        }
+
+        .strategy-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #eaf2ff;
+            border: 1px solid #cfe0ff;
+            font-size: 1.05rem;
+            flex: 0 0 auto;
+        }
+
+        /* Different icon color themes per strategy (optional) */
+        .icon-warn {
+            background: #fff2e8;
+            border-color: #ffd7bd;
+        }
+
+        .icon-para {
+            background: #eafff2;
+            border-color: #c8f2da;
+        }
+
+        .icon-early {
+            background: #f3e8ff;
+            border-color: #e2ccff;
+        }
+
+        .icon-filler {
+            background: #fffbe6;
+            border-color: #fff0b3;
+        }
+
+        .icon-random {
+            background: #e8fbff;
+            border-color: #bfefff;
+        }
+
+        .accordion-header .chevron {
+            font-size: 0.95rem;
+            transition: transform 0.2s ease;
+            opacity: 0.75;
+        }
+
+        .accordion-header[aria-expanded="true"] .chevron {
+            transform: rotate(90deg);
+            opacity: 1;
+        }
+
+        .accordion-panel {
+            display: none;
+            padding: 0.8rem 1rem 1.05rem;
+            border-top: 1px solid #eaeaea;
+        }
+
+        .accordion-panel.open {
+            display: block;
+        }
+
+        .strategy-desc {
+            font-size: 0.92rem;
+            color: #555;
+            margin: 0 0 0.9rem 0;
+        }
+
+        /* Figures */
+        .figures-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.25rem;
+            justify-content: center;
+        }
+
+        .figure-card {
+            flex: 1 1 310px;
+            max-width: 360px;
+            background: #fbfbfb;
+            border-radius: 10px;
+            padding: 0.65rem;
+            border: 1px solid #e6e6e6;
+        }
+
+        .figure-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.45rem;
+        }
+
+        .figure-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+
+        .model-chip {
+            font-size: 0.76rem;
+            padding: 0.12rem 0.48rem;
+            border-radius: 999px;
+            background: #e8eefc;
+            border: 1px solid #c4d3ff;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .model-chip.salmonn {
+            background: #e8f9f0;
+            border-color: #b9e8cf;
+        }
+
+        .model-chip.audioflamingo {
+            background: #ffe8f1;
+            border-color: #ffc4dd;
+        }
+
+        .figure-card img {
+            width: 100%;
+            display: block;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: #fff;
+        }
+
+        .figure-caption {
+            font-size: 0.82rem;
+            color: #555;
+            margin-top: 0.35rem;
+        }
+
+        /* Filler Tabs */
+        .filler-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .filler-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.15s ease;
+        }
+
+        .filler-tab:hover {
+            background: #f0f6ff;
+            color: #0b5fff;
+        }
+
+        .filler-tab.active {
+            background: #0b5fff;
+            color: #fff;
+        }
+
+        .filler-tab-content {
+            display: none;
+        }
+
+        .filler-tab-content.active {
+            display: block;
+        }
+
+        .tab-intro {
+            font-size: 0.88rem;
+            color: #666;
+            margin: 0 0 0.75rem 0;
+            font-style: italic;
+        }
+
+        /* Variant Tabs */
+        .variant-tabs {
+            display: flex;
+            gap: 0.4rem;
+            margin-bottom: 0.6rem;
+            flex-wrap: wrap;
+        }
+
+        .variant-tab {
+            padding: 0.35rem 0.75rem;
+            border: 1px solid #ddd;
+            background: #f8f8f8;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: #555;
+            cursor: pointer;
+            border-radius: 999px;
+            transition: all 0.15s ease;
+        }
+
+        .variant-tab:hover {
+            background: #eef4ff;
+            border-color: #c6d8ff;
+        }
+
+        .variant-tab.active {
+            background: #e8f0ff;
+            border-color: #0b5fff;
+            color: #0b5fff;
+        }
+
+        .variant-content {
+            display: none;
+        }
+
+        .variant-content.active {
+            display: block;
+        }
+
+        .variant-desc {
+            font-size: 0.85rem;
+            color: #666;
+            margin: 0 0 0.6rem 0;
+        }
+
+        .placeholder-img {
+            width: 100%;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* Perturbation Tabs (for Adding Mistakes & Paraphrasing) */
+        .perturbation-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 0.5rem;
+        }
+
+        .perturbation-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-radius: 6px 6px 0 0;
+            transition: all 0.15s ease;
+        }
+
+        .perturbation-tab:hover {
+            background: #f0f6ff;
+            color: #0b5fff;
+        }
+
+        .perturbation-tab.active {
+            background: #0b5fff;
+            color: #fff;
+        }
+
+        .perturbation-content {
+            display: none;
+        }
+
+        .perturbation-content.active {
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            font-size: 0.85rem;
+            color: #777;
+            padding-top: 0.9rem;
+            border-top: 1px solid #ddd;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .paper-title {
+                font-size: 1.5rem;
+            }
+
+            .strategy-icon {
+                width: 32px;
+                height: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="paper-title">🎧🧠 Investigating Faithfulness in Large Audio Language Models</div>
+            <div class="paper-authors">Lovenya Jain*, Pooneh Mousavi*, Mirco Ravanelli, Cem Subakan</div>
+
+            <div class="quickbar">
+                <a class="pill primary" href="https://arxiv.org/pdf/2509.22363" target="_blank"
+                    rel="noopener noreferrer">
+                    📄 Paper (arXiv PDF)
+                </a>
+                <a class="pill primary" href="https://github.com/lovenya/Measuring-Faithfulness-of-CoT-Reasoning-LALMs"
+                    target="_blank" rel="noopener noreferrer">
+                    💻 Code
+                </a>
+                <a class="pill" href="#abstract">📝 Abstract</a>
+                <a class="pill" href="#citation">📚 Citation</a>
+                <a class="pill" href="#strategies-index">🧭 Strategies</a>
+            </div>
+        </header>
+
+        <section class="section" id="abstract">
+            <h2>📝 Abstract</h2>
+            <p>
+                Faithfulness measures whether chain-of-thought (CoT) representations accurately reflect a model's
+                decision
+                process and can be used as reliable explanations.
+                Prior work has shown that CoTs from text-based LLMs are often unfaithful. This question has not been
+                explored
+                for large audio-language models (LALMs), where
+                faithfulness is critical for safety-sensitive applications. Reasoning in LALMs is also more challenging,
+                as
+                models must first extract relevant clues from audio
+                before reasoning over them. In this paper, we investigate the faithfulness of CoTs produced by several
+                LALMs by
+                applying targeted interventions, including
+                paraphrasing, filler token injection, early answering, and introducing mistakes, on two challenging
+                reasoning
+                datasets: SAKURA and MMAR. After going through
+                the aforementioned interventions across several datasets and tasks, our experiments suggest that LALMs
+                generally
+                produce CoTs that appear to be faithful to
+                their underlying decision processes.
+            </p>
+        </section>
+
+        <section class="section" id="citation">
+            <h2>📚 Citation</h2>
+            <p>Use the following BibTeX entry to cite this work:</p>
+            <div class="bibtex-container">
+                <textarea id="bibtex" class="bibtex-box" readonly>
+@article{jain2025investigating,
+  title   = {Investigating Faithfulness in Large Audio Language Models},
+  author  = {Jain, Lovenya and Mousavi, Pooneh and Ravanelli, Mirco and Subakan, Cem},
+  journal = {arXiv preprint arXiv:2509.22363},
+  year    = {2025}
+}
+        </textarea>
+                <button class="copy-btn" id="copy-bib-btn">Copy BibTeX</button>
+            </div>
+        </section>
+
+        <section class="section" id="strategies-index">
+            <h2>🧭 Strategies (Jump to)</h2>
+            <ol class="toc-list">
+                <li><a href="#strategy-adding-mistake">⚠️ Adding Mistakes</a></li>
+                <li><a href="#strategy-paraphrasing">🪄 Paraphrasing</a></li>
+                <li><a href="#strategy_filler">🧱 Filler Tokens</a></li>
+                <li><a href="#strategy-early">⏩ Early Answering</a></li>
+                <li><a href="#strategy-correct-incorrect">✅❌ Correct vs Incorrect</a></li>
+            </ol>
+            <p style="font-size:0.88rem; color:#666; margin:0;">
+                Tip: each accordion contains figures per model (QWEN, SALMONN 13B, AudioFlamingo).
+            </p>
+        </section>
+
+        <section class="section" id="strategies">
+            <h2>📊 Strategies &amp; Model Comparisons</h2>
+
+            <div class="accordion">
+                <!-- Strategy 1: Adding Mistakes -->
+                <div class="accordion-item" id="strategy-adding-mistake">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="label">
+                            <span class="strategy-icon icon-warn">⚠️</span>
+                            Adding Mistakes
+                        </span>
+                        <span class="chevron">&#9654;</span>
+                    </button>
+
+                    <div class="accordion-panel">
+                        <p class="strategy-desc">
+                            To assess whether the model relies on the semantic content of the CoT, we incrementally
+                            introduce mistakes
+                            into the reasoning.
+                        </p>
+
+                        <!-- Perturbation Type Tabs -->
+                        <div class="perturbation-tabs" data-section="mistakes">
+                            <button class="perturbation-tab active" data-tab="self">Self-Perturbation</button>
+                            <button class="perturbation-tab" data-tab="external">External LLM</button>
+                        </div>
+
+                        <!-- Self-Perturbation -->
+                        <div class="perturbation-content active" id="mistakes-self">
+                            <p class="tab-intro">Perturbations generated by the same model that produced the original
+                                CoT.</p>
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/cross_dataset_adding_mistakes_qwen.jpg"
+                                        alt="Adding mistakes – QWEN" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/cross_dataset_adding_mistakes_salmonn.jpg"
+                                        alt="Adding mistakes – SALMONN" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">AudioFlamingo</div>
+                                        <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+                                    </div>
+                                    <img src="figures/cross_dataset_adding_mistakes_flamingo-restricted.png"
+                                        alt="Adding mistakes – AudioFlamingo" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- External LLM Perturbation -->
+                        <div class="perturbation-content" id="mistakes-external">
+                            <p class="tab-intro">Perturbations generated by an external LLM to avoid self-bias.</p>
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN 2 Audio</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <!-- TODO: Uncomment when figure is ready -->
+                                    <!-- <img src="figures/cross_dataset_adding_mistakes_qwen_external.png" alt="Adding mistakes – QWEN 2 Audio (External LLM)" /> -->
+                                    <div class="placeholder-img">📊 Plot coming soon</div>
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <!-- TODO: Uncomment when figure is ready -->
+                                    <!-- <img src="figures/cross_dataset_adding_mistakes_salmonn_external.png" alt="Adding mistakes – SALMONN 13B (External LLM)" /> -->
+                                    <div class="placeholder-img">📊 Plot coming soon</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy 2: Paraphrasing -->
+                <div class="accordion-item" id="strategy-paraphrasing">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="label">
+                            <span class="strategy-icon icon-para">🪄</span>
+                            Paraphrasing
+                        </span>
+                        <span class="chevron">&#9654;</span>
+                    </button>
+
+                    <div class="accordion-panel">
+                        <p class="strategy-desc">
+                            To test whether CoTs contain hidden information encoded in their phrasing, we paraphrase
+                            each CoT while
+                            preserving semantic content.
+                        </p>
+
+                        <!-- Perturbation Type Tabs -->
+                        <div class="perturbation-tabs" data-section="paraphrase">
+                            <button class="perturbation-tab active" data-tab="self">Self-Perturbation</button>
+                            <button class="perturbation-tab" data-tab="external">External LLM</button>
+                        </div>
+
+                        <!-- Self-Perturbation -->
+                        <div class="perturbation-content active" id="paraphrase-self">
+                            <p class="tab-intro">Paraphrasing performed by the same model that produced the original
+                                CoT.</p>
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/cross_dataset_paraphrasing_qwen.jpg" alt="Paraphrasing – QWEN" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/cross_dataset_paraphrasing_salmonn.jpg"
+                                        alt="Paraphrasing – SALMONN" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">AudioFlamingo</div>
+                                        <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+                                    </div>
+                                    <img src="figures/cross_dataset_paraphrasing_flamingo-restricted.png"
+                                        alt="Paraphrasing – AudioFlamingo" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- External LLM Perturbation -->
+                        <div class="perturbation-content" id="paraphrase-external">
+                            <p class="tab-intro">Paraphrasing performed by an external LLM to avoid self-bias.</p>
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN 2 Audio</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <!-- TODO: Uncomment when figure is ready -->
+                                    <!-- <img src="figures/cross_dataset_paraphrasing_qwen_external.png" alt="Paraphrasing – QWEN 2 Audio (External LLM)" /> -->
+                                    <div class="placeholder-img">📊 Plot coming soon</div>
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <!-- TODO: Uncomment when figure is ready -->
+                                    <!-- <img src="figures/cross_dataset_paraphrasing_salmonn_external.png" alt="Paraphrasing – SALMONN 13B (External LLM)" /> -->
+                                    <div class="placeholder-img">📊 Plot coming soon</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item" id="strategy_filler">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="label">
+                            <span class="strategy-icon icon-random">🧱</span>
+                            Filler Tokens
+                        </span>
+                        <span class="chevron">&#9654;</span>
+                    </button>
+
+                    <div class="accordion-panel">
+                        <p class="strategy-desc">
+                            To test whether models rely on the semantic content of CoT, we replace tokens with filler
+                            text while
+                            preserving the same test-time compute.
+                        </p>
+
+                        <!-- Filler Type Tabs -->
+                        <div class="filler-tabs">
+                            <button class="filler-tab active" data-tab="dots">Dots ("...")</button>
+                            <button class="filler-tab" data-tab="lorem">Lorem Ipsum</button>
+                        </div>
+
+                        <!-- Dots Tab Content -->
+                        <div class="filler-tab-content active" id="tab-dots">
+                            <p class="tab-intro">We replace CoT tokens with "..." to destroy semantic meaning while
+                                maintaining token
+                                count.</p>
+
+                            <!-- Sub-tabs for Dots variants -->
+                            <div class="variant-tabs">
+                                <button class="variant-tab active" data-variant="random">Random Partial</button>
+                                <button class="variant-tab" data-variant="start">Start Partial</button>
+                                <button class="variant-tab" data-variant="end">End Partial</button>
+                            </div>
+
+                            <!-- Random Partial -->
+                            <div class="variant-content active" id="variant-random">
+                                <p class="variant-desc">Randomly selected tokens are replaced throughout the CoT.</p>
+                                <div class="figures-grid">
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">QWEN</div>
+                                            <div class="model-chip">QWEN 🔵</div>
+                                        </div>
+                                        <img src="figures/cross_dataset_random_partial_filler_text_qwen.jpg"
+                                            alt="Random Partial – QWEN" />
+                                    </div>
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">SALMONN</div>
+                                            <div class="model-chip salmonn">SALMONN 🟢</div>
+                                        </div>
+                                        <img src="figures/cross_dataset_random_partial_filler_text_salmonn.jpg"
+                                            alt="Random Partial – SALMONN" />
+                                    </div>
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">AudioFlamingo</div>
+                                            <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+                                        </div>
+                                        <img src="figures/cross_dataset_random_partial_filler_text_flamingo-restricted.png"
+                                            alt="Random Partial – AudioFlamingo" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Start Partial -->
+                            <div class="variant-content" id="variant-start">
+                                <p class="variant-desc">Tokens are replaced starting from the beginning of the CoT.</p>
+                                <div class="figures-grid">
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">QWEN</div>
+                                            <div class="model-chip">QWEN 🔵</div>
+                                        </div>
+                                        <img src="figures/cross_dataset_partial_filler_text_qwen-restricted.png"
+                                            alt="Start Partial – QWEN" />
+                                    </div>
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">SALMONN 13B</div>
+                                            <div class="model-chip salmonn">SALMONN 🟢</div>
+                                        </div>
+                                        <!-- TODO: Uncomment when figure is ready -->
+                                        <!-- <img src="figures/cross_dataset_partial_filler_text_salmonn-restricted.png" alt="Start Partial – SALMONN 13B" /> -->
+                                        <div class="placeholder-img">📊 Plot coming soon</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- End Partial -->
+                            <div class="variant-content" id="variant-end">
+                                <p class="variant-desc">Tokens are replaced starting from the end of the CoT.</p>
+                                <div class="figures-grid">
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">QWEN</div>
+                                            <div class="model-chip">QWEN 🔵</div>
+                                        </div>
+                                        <img src="figures/cross_dataset_flipped_partial_filler_text_qwen-restricted.png"
+                                            alt="End Partial – QWEN" />
+                                    </div>
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">SALMONN 13B</div>
+                                            <div class="model-chip salmonn">SALMONN 🟢</div>
+                                        </div>
+                                        <!-- TODO: Uncomment when figure is ready -->
+                                        <!-- <img src="figures/cross_dataset_flipped_partial_filler_text_salmonn-restricted.png" alt="End Partial – SALMONN 13B" /> -->
+                                        <div class="placeholder-img">📊 Plot coming soon</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lorem Ipsum Tab Content -->
+                        <div class="filler-tab-content" id="tab-lorem">
+                            <p class="tab-intro">We replace CoT tokens with Lorem Ipsum text as an alternative filler to
+                                test semantic
+                                dependency.</p>
+
+                            <div class="variant-tabs">
+                                <button class="variant-tab active" data-variant="lorem-random">Random Partial</button>
+                            </div>
+
+                            <div class="variant-content active" id="variant-lorem-random">
+                                <p class="variant-desc">Randomly selected tokens are replaced with Lorem Ipsum text.</p>
+                                <div class="figures-grid">
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">QWEN</div>
+                                            <div class="model-chip">QWEN 🔵</div>
+                                        </div>
+                                        <img src="figures/cross_dataset_random_partial_filler_text_qwen-restricted_lorem.png"
+                                            alt="Lorem Ipsum – QWEN" />
+                                    </div>
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">SALMONN</div>
+                                            <div class="model-chip salmonn">SALMONN 🟢</div>
+                                        </div>
+                                        <img src="figures/cross_dataset_random_partial_filler_text_salmonn-restricted_lorem.png"
+                                            alt="Lorem Ipsum – SALMONN" />
+                                    </div>
+                                    <div class="figure-card">
+                                        <div class="figure-header">
+                                            <div class="figure-title">AudioFlamingo</div>
+                                            <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+                                        </div>
+                                        <!-- TODO: Uncomment when figure is ready -->
+                                        <!-- <img src="figures/cross_dataset_random_partial_filler_text_flamingo-restricted_lorem.png" alt="Lorem Ipsum – AudioFlamingo" /> -->
+                                        <div class="placeholder-img">📊 Plot coming soon</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Strategy 3: Template -->
+                <div class="accordion-item" id="strategy-early">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="label">
+                            <span class="strategy-icon icon-random">⏩</span>
+                            Early Answering
+                        </span>
+                        <span class="chevron">&#9654;</span>
+                    </button>
+
+                    <div class="accordion-panel">
+                        <p class="strategy-desc">
+                            To test whether accuracy gains of CoT originate from post-hoc reasoning, we truncate the CoT
+                            and prompt
+                            the model to answer using only the partial reasoning.
+                        </p>
+
+                        <div class="figures-grid">
+                            <div class="figure-card">
+                                <div class="figure-header">
+                                    <div class="figure-title">QWEN</div>
+                                    <div class="model-chip">QWEN 🔵</div>
+                                </div>
+                                <img src="figures/cross_dataset_early_answering_qwen.jpg" alt="Strategy 3 – QWEN" />
+                            </div>
+
+                            <div class="figure-card">
+                                <div class="figure-header">
+                                    <div class="figure-title">SALMONN</div>
+                                    <div class="model-chip salmonn">SALMONN 🟢</div>
+                                </div>
+                                <img src="figures/cross_dataset_early_answering_salmonn.jpg"
+                                    alt="Strategy 3 – SALMONN" />
+                                <div class="figure-caption">Placeholder.</div>
+                            </div>
+
+                            <div class="figure-card">
+                                <div class="figure-header">
+                                    <div class="figure-title">AudioFlamingo</div>
+                                    <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+                                </div>
+                                <img src="figures/cross_dataset_early_answering_flamingo-restricted.png"
+                                    alt="Strategy 3 – AudioFlamingo" />
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Duplicate accordion-item blocks for more strategies -->
+
+                <!-- Strategy 5: Correct vs Incorrect -->
+                <div class="accordion-item" id="strategy-correct-incorrect">
+                    <button class="accordion-header" aria-expanded="false">
+                        <span class="label">
+                            <span class="strategy-icon icon-early">✅❌</span>
+                            Correct vs Incorrect Analysis
+                        </span>
+                        <span class="chevron">&#9654;</span>
+                    </button>
+
+                    <div class="accordion-panel">
+                        <p class="strategy-desc">
+                            Consistency analysis performed separately on correct vs incorrect samples to examine whether
+                            faithfulness
+                            patterns differ based on initial prediction accuracy.
+                        </p>
+
+                        <!-- Experiment Tabs -->
+                        <div class="perturbation-tabs" data-section="cvi">
+                            <button class="perturbation-tab active" data-tab="adding-mistakes">Adding Mistakes</button>
+                            <button class="perturbation-tab" data-tab="paraphrasing">Paraphrasing</button>
+                            <button class="perturbation-tab" data-tab="filler">Filler Tokens</button>
+                            <button class="perturbation-tab" data-tab="early">Early Answering</button>
+                        </div>
+
+                        <!-- Adding Mistakes -->
+                        <div class="perturbation-content active" id="cvi-adding-mistakes">
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Correct</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/adding_mistakes/adding_mistakes_qwen_correct_restricted.png"
+                                        alt="Adding Mistakes – QWEN Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Incorrect</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/adding_mistakes/adding_mistakes_qwen_incorrect_restricted.png"
+                                        alt="Adding Mistakes – QWEN Incorrect" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Correct</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/adding_mistakes/adding_mistakes_salmonn_correct_restricted.png"
+                                        alt="Adding Mistakes – SALMONN 13B Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Incorrect</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/adding_mistakes/adding_mistakes_salmonn_incorrect_restricted.png"
+                                        alt="Adding Mistakes – SALMONN 13B Incorrect" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Paraphrasing -->
+                        <div class="perturbation-content" id="cvi-paraphrasing">
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Correct</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/paraphrasing/paraphrasing_qwen_correct_restricted.png"
+                                        alt="Paraphrasing – QWEN Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Incorrect</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/paraphrasing/paraphrasing_qwen_incorrect_restricted.png"
+                                        alt="Paraphrasing – QWEN Incorrect" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Correct</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/paraphrasing/paraphrasing_salmonn_correct_restricted.png"
+                                        alt="Paraphrasing – SALMONN 13B Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Incorrect</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/paraphrasing/paraphrasing_salmonn_incorrect_restricted.png"
+                                        alt="Paraphrasing – SALMONN 13B Incorrect" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filler Tokens -->
+                        <div class="perturbation-content" id="cvi-filler">
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Correct</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/random_partial_filler_text/random_partial_filler_text_qwen_correct_restricted.png"
+                                        alt="Filler Tokens – QWEN Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Incorrect</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/random_partial_filler_text/random_partial_filler_text_qwen_incorrect_restricted.png"
+                                        alt="Filler Tokens – QWEN Incorrect" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Correct</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/random_partial_filler_text/random_partial_filler_text_salmonn_correct_restricted.png"
+                                        alt="Filler Tokens – SALMONN 13B Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Incorrect</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/random_partial_filler_text/random_partial_filler_text_salmonn_incorrect_restricted.png"
+                                        alt="Filler Tokens – SALMONN 13B Incorrect" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Early Answering -->
+                        <div class="perturbation-content" id="cvi-early">
+                            <div class="figures-grid">
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Correct</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/early_answering/early_answering_qwen_correct_restricted.png"
+                                        alt="Early Answering – QWEN Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">QWEN – Incorrect</div>
+                                        <div class="model-chip">QWEN 🔵</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/qwen/early_answering/early_answering_qwen_incorrect_restricted.png"
+                                        alt="Early Answering – QWEN Incorrect" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Correct</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/early_answering/early_answering_salmonn_correct_restricted.png"
+                                        alt="Early Answering – SALMONN 13B Correct" />
+                                </div>
+                                <div class="figure-card">
+                                    <div class="figure-header">
+                                        <div class="figure-title">SALMONN 13B – Incorrect</div>
+                                        <div class="model-chip salmonn">SALMONN 🟢</div>
+                                    </div>
+                                    <img src="figures/correct_vs_incorrect/salmonn/early_answering/early_answering_salmonn_incorrect_restricted.png"
+                                        alt="Early Answering – SALMONN 13B Incorrect" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            &copy; 2025. Demo page for “Investigating Faithfulness in Large Audio Language Models”.
+        </footer>
+    </div>
+
+    <script>
+        // Accordion behavior
+        document.querySelectorAll('.accordion-header').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var expanded = this.getAttribute('aria-expanded') === 'true';
+                this.setAttribute('aria-expanded', String(!expanded));
+
+                var panel = this.nextElementSibling;
+                if (!expanded) panel.classList.add('open');
+                else panel.classList.remove('open');
+            });
+        });
+
+        // BibTeX copy button
+        document.getElementById('copy-bib-btn').addEventListener('click', function () {
+            var textarea = document.getElementById('bibtex');
+            textarea.select();
+            textarea.setSelectionRange(0, 99999);
+            try {
+                document.execCommand('copy');
+                this.textContent = 'Copied ✅';
+                var btn = this;
+                setTimeout(function () { btn.textContent = 'Copy BibTeX'; }, 1500);
+            } catch (err) {
+                alert('Press Ctrl/Cmd+C to copy.');
+            }
+        });
+
+        // Filler type tabs (Dots vs Lorem Ipsum)
+        document.querySelectorAll('.filler-tab').forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                var targetTab = this.getAttribute('data-tab');
+
+                // Update active tab button
+                document.querySelectorAll('.filler-tab').forEach(function (t) {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // Show corresponding content
+                document.querySelectorAll('.filler-tab-content').forEach(function (content) {
+                    content.classList.remove('active');
+                });
+                document.getElementById('tab-' + targetTab).classList.add('active');
+            });
+        });
+
+        // Variant tabs (Random/Start/End Partial) - only for Dots tab
+        document.querySelectorAll('#tab-dots .variant-tab').forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                var targetVariant = this.getAttribute('data-variant');
+
+                // Update active variant button within Dots tab
+                document.querySelectorAll('#tab-dots .variant-tab').forEach(function (t) {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+
+                // Show corresponding variant content within Dots tab
+                document.querySelectorAll('#tab-dots .variant-content').forEach(function (content) {
+                    content.classList.remove('active');
+                });
+                document.getElementById('variant-' + targetVariant).classList.add('active');
+            });
+        });
+
+        // Perturbation tabs (Self vs External LLM) for Adding Mistakes & Paraphrasing
+        document.querySelectorAll('.perturbation-tabs').forEach(function (tabContainer) {
+            var section = tabContainer.getAttribute('data-section');
+            tabContainer.querySelectorAll('.perturbation-tab').forEach(function (tab) {
+                tab.addEventListener('click', function () {
+                    var targetTab = this.getAttribute('data-tab');
+
+                    // Update active tab button within this section
+                    tabContainer.querySelectorAll('.perturbation-tab').forEach(function (t) {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+
+                    // Show corresponding content
+                    var panel = tabContainer.closest('.accordion-panel');
+                    panel.querySelectorAll('.perturbation-content').forEach(function (content) {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(section + '-' + targetTab).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
