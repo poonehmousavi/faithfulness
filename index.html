@@ -323,6 +323,111 @@
       margin-top: 0.35rem;
     }
 
+    /* Filler Tabs */
+    .filler-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+
+    .filler-tab {
+      padding: 0.5rem 1rem;
+      border: none;
+      background: transparent;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      border-radius: 6px 6px 0 0;
+      transition: all 0.15s ease;
+    }
+
+    .filler-tab:hover {
+      background: #f0f6ff;
+      color: #0b5fff;
+    }
+
+    .filler-tab.active {
+      background: #0b5fff;
+      color: #fff;
+    }
+
+    .filler-tab-content {
+      display: none;
+    }
+
+    .filler-tab-content.active {
+      display: block;
+    }
+
+    .tab-intro {
+      font-size: 0.88rem;
+      color: #666;
+      margin: 0 0 0.75rem 0;
+      font-style: italic;
+    }
+
+    /* Variant Tabs */
+    .variant-tabs {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .variant-tab {
+      padding: 0.35rem 0.75rem;
+      border: 1px solid #ddd;
+      background: #f8f8f8;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #555;
+      cursor: pointer;
+      border-radius: 999px;
+      transition: all 0.15s ease;
+    }
+
+    .variant-tab:hover {
+      background: #eef4ff;
+      border-color: #c6d8ff;
+    }
+
+    .variant-tab.active {
+      background: #e8f0ff;
+      border-color: #0b5fff;
+      color: #0b5fff;
+    }
+
+    .variant-content {
+      display: none;
+    }
+
+    .variant-content.active {
+      display: block;
+    }
+
+    .variant-desc {
+      font-size: 0.85rem;
+      color: #666;
+      margin: 0 0 0.6rem 0;
+    }
+
+    .placeholder-img {
+      width: 100%;
+      min-height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #6c757d;
+      font-weight: 500;
+    }
+
     footer {
       text-align: center;
       font-size: 0.85rem;
@@ -405,7 +510,7 @@
       <ol class="toc-list">
         <li><a href="#strategy-adding-mistake">⚠️ Adding Mistakes</a></li>
         <li><a href="#strategy-paraphrasing">🪄 Paraphrasing</a></li>
-        <li><a href="#strategy-filler">🧱 Filler Tokens - "..."</a></li>
+        <li><a href="#strategy_filler">🧱 Filler Tokens</a></li>
         <li><a href="#strategy-early">⏩ Early Answering</a></li>
       </ol>
       <p style="font-size:0.88rem; color:#666; margin:0;">
@@ -511,41 +616,142 @@
           <button class="accordion-header" aria-expanded="false">
             <span class="label">
               <span class="strategy-icon icon-random">🧱</span>
-              Filler Tokens - "..."
+              Filler Tokens
             </span>
             <span class="chevron">&#9654;</span>
           </button>
 
           <div class="accordion-panel">
             <p class="strategy-desc">
-              To assess whether the model relies on the semantic content of the CoT representations, we replace a given
-              percentage of CoT tokens with filler tokens ("...").
+              To test whether models rely on the semantic content of CoT, we replace tokens with filler text while
+              preserving the same test-time compute.
             </p>
 
-            <div class="figures-grid">
-              <div class="figure-card">
-                <div class="figure-header">
-                  <div class="figure-title">QWEN</div>
-                  <div class="model-chip">QWEN 🔵</div>
-                </div>
-                <img src="figures/cross_dataset_random_partial_filler_text_qwen.jpg" alt="Strategy 3 – QWEN" />
+            <!-- Filler Type Tabs -->
+            <div class="filler-tabs">
+              <button class="filler-tab active" data-tab="dots">Dots ("...")</button>
+              <button class="filler-tab" data-tab="lorem">Lorem Ipsum</button>
+            </div>
+
+            <!-- Dots Tab Content -->
+            <div class="filler-tab-content active" id="tab-dots">
+              <p class="tab-intro">We replace CoT tokens with "..." to destroy semantic meaning while maintaining token
+                count.</p>
+
+              <!-- Sub-tabs for Dots variants -->
+              <div class="variant-tabs">
+                <button class="variant-tab active" data-variant="random">Random Partial</button>
+                <button class="variant-tab" data-variant="start">Start Partial</button>
+                <button class="variant-tab" data-variant="end">End Partial</button>
               </div>
 
-              <div class="figure-card">
-                <div class="figure-header">
-                  <div class="figure-title">SALMONN</div>
-                  <div class="model-chip salmonn">SALMONN 🟢</div>
+              <!-- Random Partial -->
+              <div class="variant-content active" id="variant-random">
+                <p class="variant-desc">Randomly selected tokens are replaced throughout the CoT.</p>
+                <div class="figures-grid">
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">QWEN</div>
+                      <div class="model-chip">QWEN 🔵</div>
+                    </div>
+                    <img src="figures/cross_dataset_random_partial_filler_text_qwen.jpg" alt="Random Partial – QWEN" />
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN</div>
+                      <div class="model-chip salmonn">SALMONN 🟢</div>
+                    </div>
+                    <img src="figures/cross_dataset_random_partial_filler_text_salmonn.jpg"
+                      alt="Random Partial – SALMONN" />
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">AudioFlamingo</div>
+                      <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+                    </div>
+                    <img src="figures/cross_dataset_random_partial_filler_text_flamingo-restricted.png"
+                      alt="Random Partial – AudioFlamingo" />
+                  </div>
                 </div>
-                <img src="figures/cross_dataset_random_partial_filler_text_salmonn.jpg" alt="Strategy 3 – SALMONN" />
               </div>
 
-              <div class="figure-card">
-                <div class="figure-header">
-                  <div class="figure-title">AudioFlamingo</div>
-                  <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+              <!-- Start Partial -->
+              <div class="variant-content" id="variant-start">
+                <p class="variant-desc">Tokens are replaced starting from the beginning of the CoT.</p>
+                <div class="figures-grid">
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">QWEN</div>
+                      <div class="model-chip">QWEN 🔵</div>
+                    </div>
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN 13B</div>
+                      <div class="model-chip salmonn">SALMONN 🟢</div>
+                    </div>
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
                 </div>
-                <img src="figures/cross_dataset_random_partial_filler_text_flamingo-restricted.png"
-                  alt="Strategy 3 – AudioFlamingo" />
+              </div>
+
+              <!-- End Partial -->
+              <div class="variant-content" id="variant-end">
+                <p class="variant-desc">Tokens are replaced starting from the end of the CoT.</p>
+                <div class="figures-grid">
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">QWEN</div>
+                      <div class="model-chip">QWEN 🔵</div>
+                    </div>
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN 13B</div>
+                      <div class="model-chip salmonn">SALMONN 🟢</div>
+                    </div>
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lorem Ipsum Tab Content -->
+            <div class="filler-tab-content" id="tab-lorem">
+              <p class="tab-intro">We replace CoT tokens with Lorem Ipsum text as an alternative filler to test semantic
+                dependency.</p>
+
+              <div class="variant-tabs">
+                <button class="variant-tab active" data-variant="lorem-random">Random Partial</button>
+              </div>
+
+              <div class="variant-content active" id="variant-lorem-random">
+                <p class="variant-desc">Randomly selected tokens are replaced with Lorem Ipsum text.</p>
+                <div class="figures-grid">
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">QWEN</div>
+                      <div class="model-chip">QWEN 🔵</div>
+                    </div>
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN</div>
+                      <div class="model-chip salmonn">SALMONN 🟢</div>
+                    </div>
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">AudioFlamingo</div>
+                      <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
+                    </div>
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -590,7 +796,7 @@
                   <div class="figure-title">AudioFlamingo</div>
                   <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
                 </div>
-                <img src="figures\cross_dataset_early_answering_flamingo-restricted.png"
+                <img src="figures/cross_dataset_early_answering_flamingo-restricted.png"
                   alt="Strategy 3 – AudioFlamingo" />
 
               </div>
@@ -633,6 +839,44 @@
       } catch (err) {
         alert('Press Ctrl/Cmd+C to copy.');
       }
+    });
+
+    // Filler type tabs (Dots vs Lorem Ipsum)
+    document.querySelectorAll('.filler-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var targetTab = this.getAttribute('data-tab');
+
+        // Update active tab button
+        document.querySelectorAll('.filler-tab').forEach(function (t) {
+          t.classList.remove('active');
+        });
+        this.classList.add('active');
+
+        // Show corresponding content
+        document.querySelectorAll('.filler-tab-content').forEach(function (content) {
+          content.classList.remove('active');
+        });
+        document.getElementById('tab-' + targetTab).classList.add('active');
+      });
+    });
+
+    // Variant tabs (Random/Start/End Partial) - only for Dots tab
+    document.querySelectorAll('#tab-dots .variant-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var targetVariant = this.getAttribute('data-variant');
+
+        // Update active variant button within Dots tab
+        document.querySelectorAll('#tab-dots .variant-tab').forEach(function (t) {
+          t.classList.remove('active');
+        });
+        this.classList.add('active');
+
+        // Show corresponding variant content within Dots tab
+        document.querySelectorAll('#tab-dots .variant-content').forEach(function (content) {
+          content.classList.remove('active');
+        });
+        document.getElementById('variant-' + targetVariant).classList.add('active');
+      });
     });
   </script>
 </body>
