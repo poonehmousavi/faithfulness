@@ -890,6 +890,8 @@
 
               <div class="variant-tabs">
                 <button class="variant-tab active" data-variant="lorem-random">Random Partial</button>
+                <button class="variant-tab" data-variant="lorem-start">Start Partial</button>
+                <button class="variant-tab" data-variant="lorem-end">End Partial</button>
               </div>
 
               <div class="variant-content active" id="variant-lorem-random">
@@ -901,7 +903,7 @@
                       <div class="model-chip">QWEN 🔵</div>
                     </div>
                     <img src="figures/cross_dataset_random_partial_filler_text_qwen-restricted_lorem.png"
-                      alt="Lorem Ipsum – QWEN" />
+                      alt="Semantic Filler Random – QWEN" />
                   </div>
                   <div class="figure-card">
                     <div class="figure-header">
@@ -909,7 +911,7 @@
                       <div class="model-chip salmonn">SALMONN 13B 🟢</div>
                     </div>
                     <img src="figures/cross_dataset_random_partial_filler_text_salmonn-restricted_lorem.png"
-                      alt="Lorem Ipsum – SALMONN 13B" />
+                      alt="Semantic Filler Random – SALMONN 13B" />
                   </div>
                   <div class="figure-card">
                     <div class="figure-header">
@@ -917,7 +919,7 @@
                       <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
                     </div>
                     <!-- TODO: Uncomment when figure is ready -->
-                    <!-- <img src="figures/cross_dataset_random_partial_filler_text_flamingo-restricted_lorem.png" alt="Lorem Ipsum – AudioFlamingo" /> -->
+                    <!-- <img src="figures/cross_dataset_random_partial_filler_text_flamingo-restricted_lorem.png" alt="Semantic Filler Random – AudioFlamingo" /> -->
                     <div class="placeholder-img">📊 Plot coming soon</div>
                   </div>
                   <div class="figure-card">
@@ -926,7 +928,76 @@
                       <div class="model-chip salmonn-7b">SALMONN 7B 🟢</div>
                     </div>
                     <img src="figures/cross_dataset_random_partial_filler_text_salmonn_7b-restricted_lorem.png"
-                      alt="Semantic Filler – SALMONN 7B" />
+                      alt="Semantic Filler Random – SALMONN 7B" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Start Partial -->
+              <div class="variant-content" id="variant-lorem-start">
+                <p class="variant-desc">Tokens are replaced starting from the beginning of the CoT with Lorem Ipsum
+                  text.</p>
+                <div class="figures-grid">
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">QWEN</div>
+                      <div class="model-chip">QWEN 🔵</div>
+                    </div>
+                    <!-- TODO: Uncomment when figure is ready -->
+                    <!-- <img src="figures/cross_dataset_partial_filler_text_qwen-restricted_lorem.png" alt="Semantic Filler Start – QWEN" /> -->
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN 13B</div>
+                      <div class="model-chip salmonn">SALMONN 13B 🟢</div>
+                    </div>
+                    <!-- TODO: Uncomment when figure is ready -->
+                    <!-- <img src="figures/cross_dataset_partial_filler_text_salmonn-restricted_lorem.png" alt="Semantic Filler Start – SALMONN 13B" /> -->
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN 7B</div>
+                      <div class="model-chip salmonn-7b">SALMONN 7B 🟢</div>
+                    </div>
+                    <!-- TODO: Uncomment when figure is ready -->
+                    <!-- <img src="figures/cross_dataset_partial_filler_text_salmonn_7b-restricted_lorem.png" alt="Semantic Filler Start – SALMONN 7B" /> -->
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- End Partial -->
+              <div class="variant-content" id="variant-lorem-end">
+                <p class="variant-desc">Tokens are replaced starting from the end of the CoT with Lorem Ipsum text.</p>
+                <div class="figures-grid">
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">QWEN</div>
+                      <div class="model-chip">QWEN 🔵</div>
+                    </div>
+                    <!-- TODO: Uncomment when figure is ready -->
+                    <!-- <img src="figures/cross_dataset_flipped_partial_filler_text_qwen-restricted_lorem.png" alt="Semantic Filler End – QWEN" /> -->
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN 13B</div>
+                      <div class="model-chip salmonn">SALMONN 13B 🟢</div>
+                    </div>
+                    <!-- TODO: Uncomment when figure is ready -->
+                    <!-- <img src="figures/cross_dataset_flipped_partial_filler_text_salmonn-restricted_lorem.png" alt="Semantic Filler End – SALMONN 13B" /> -->
+                    <div class="placeholder-img">📊 Plot coming soon</div>
+                  </div>
+                  <div class="figure-card">
+                    <div class="figure-header">
+                      <div class="figure-title">SALMONN 7B</div>
+                      <div class="model-chip salmonn-7b">SALMONN 7B 🟢</div>
+                    </div>
+                    <!-- TODO: Uncomment when figure is ready -->
+                    <!-- <img src="figures/cross_dataset_flipped_partial_filler_text_salmonn_7b-restricted_lorem.png" alt="Semantic Filler End – SALMONN 7B" /> -->
+                    <div class="placeholder-img">📊 Plot coming soon</div>
                   </div>
                 </div>
               </div>
