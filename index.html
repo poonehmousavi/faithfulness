@@ -606,21 +606,24 @@
                     <div class="figure-title">QWEN</div>
                     <div class="model-chip">QWEN 🔵</div>
                   </div>
-                  <img src="figures/cross_dataset_adding_mistakes_qwen.jpg" alt="Adding mistakes – QWEN" />
+                  <img src="figures/adding_mistakes/self_perturbation/cross_dataset_adding_mistakes_qwen.jpg"
+                    alt="Adding mistakes – QWEN" />
                 </div>
                 <div class="figure-card">
                   <div class="figure-header">
                     <div class="figure-title">SALMONN 13B</div>
                     <div class="model-chip salmonn">SALMONN 13B 🟢</div>
                   </div>
-                  <img src="figures/cross_dataset_adding_mistakes_salmonn.jpg" alt="Adding mistakes – SALMONN 13B" />
+                  <img src="figures/adding_mistakes/self_perturbation/cross_dataset_adding_mistakes_salmonn.jpg"
+                    alt="Adding mistakes – SALMONN 13B" />
                 </div>
                 <div class="figure-card">
                   <div class="figure-header">
                     <div class="figure-title">AudioFlamingo</div>
                     <div class="model-chip audioflamingo">AudioFlamingo 🦩</div>
                   </div>
-                  <img src="figures/cross_dataset_adding_mistakes_flamingo-restricted.png"
+                  <img
+                    src="figures/adding_mistakes/self_perturbation/cross_dataset_adding_mistakes_flamingo-restricted.png"
                     alt="Adding mistakes – AudioFlamingo" />
                 </div>
                 <div class="figure-card">
@@ -628,7 +631,8 @@
                     <div class="figure-title">SALMONN 7B</div>
                     <div class="model-chip salmonn-7b">SALMONN 7B 🟢</div>
                   </div>
-                  <img src="figures/cross_dataset_adding_mistakes_salmonn_7b-restricted.png"
+                  <img
+                    src="figures/adding_mistakes/self_perturbation/cross_dataset_adding_mistakes_salmonn_7b-restricted.png"
                     alt="Adding mistakes – SALMONN 7B" />
                 </div>
               </div>
@@ -643,7 +647,8 @@
                     <div class="figure-title">QWEN 2 Audio</div>
                     <div class="model-chip">QWEN 🔵</div>
                   </div>
-                  <img src="figures/cross_dataset_adding_mistakes_qwen-restricted-mistral.png"
+                  <img
+                    src="figures/adding_mistakes/external_llm/cross_dataset_adding_mistakes_qwen-restricted-mistral.png"
                     alt="Adding mistakes – QWEN 2 Audio (Mistral)" />
                 </div>
                 <div class="figure-card">
@@ -651,7 +656,8 @@
                     <div class="figure-title">SALMONN 13B</div>
                     <div class="model-chip salmonn">SALMONN 13B 🟢</div>
                   </div>
-                  <img src="figures/cross_dataset_adding_mistakes_salmonn-restricted-mistral.png"
+                  <img
+                    src="figures/adding_mistakes/external_llm/cross_dataset_adding_mistakes_salmonn-restricted-mistral.png"
                     alt="Adding mistakes – SALMONN 13B (Mistral)" />
                 </div>
               </div>
@@ -1453,7 +1459,7 @@
       });
     });
 
-    // Variant tabs (Random/Start/End Partial) - only for Dots tab
+    // Variant tabs (Random/Start/End Partial) - for Dots tab
     document.querySelectorAll('#tab-dots .variant-tab').forEach(function (tab) {
       tab.addEventListener('click', function () {
         var targetVariant = this.getAttribute('data-variant');
@@ -1466,6 +1472,25 @@
 
         // Show corresponding variant content within Dots tab
         document.querySelectorAll('#tab-dots .variant-content').forEach(function (content) {
+          content.classList.remove('active');
+        });
+        document.getElementById('variant-' + targetVariant).classList.add('active');
+      });
+    });
+
+    // Variant tabs (Random/Start/End Partial) - for Lorem/Semantic Filler tab
+    document.querySelectorAll('#tab-lorem .variant-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        var targetVariant = this.getAttribute('data-variant');
+
+        // Update active variant button within Lorem tab
+        document.querySelectorAll('#tab-lorem .variant-tab').forEach(function (t) {
+          t.classList.remove('active');
+        });
+        this.classList.add('active');
+
+        // Show corresponding variant content within Lorem tab
+        document.querySelectorAll('#tab-lorem .variant-content').forEach(function (content) {
           content.classList.remove('active');
         });
         document.getElementById('variant-' + targetVariant).classList.add('active');
