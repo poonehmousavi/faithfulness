@@ -492,198 +492,109 @@
       }
     }
 
-    /* Dataset Legend Floating Box */
-    .dataset-legend {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      z-index: 1000;
-      font-family: 'Inter', sans-serif;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .dataset-legend.hidden {
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(20px);
-    }
-
-    .legend-toggle {
-      position: absolute;
-      bottom: 0;
-      right: 0;
-      width: 48px;
-      height: 48px;
-      background: linear-gradient(135deg, #0b5fff 0%, #0a4fd6 100%);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(11, 95, 255, 0.4);
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .legend-toggle:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 16px rgba(11, 95, 255, 0.5);
-    }
-
-    .toggle-icon {
-      font-size: 20px;
-      line-height: 1;
-    }
-
-    .legend-content {
-      position: absolute;
-      bottom: 60px;
-      right: 0;
-      width: 220px;
-      background: white;
+    /* Dataset Legend Card (inline, static) */
+    .dataset-legend-card {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border: 1px solid #dee2e6;
       border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      opacity: 0;
-      transform: translateY(10px) scale(0.95);
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .dataset-legend.expanded .legend-content {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
-
-    .legend-header {
+      padding: 16px 20px;
+      margin-bottom: 24px;
       display: flex;
-      justify-content: space-between;
+      flex-wrap: wrap;
       align-items: center;
-      padding: 12px 16px;
-      border-bottom: 1px solid #e9ecef;
+      gap: 20px;
     }
 
-    .legend-header h4 {
-      margin: 0;
-      font-size: 14px;
+    .dataset-legend-card .legend-title {
       font-weight: 600;
-      color: #212529;
+      color: #495057;
+      font-size: 14px;
+      margin-right: 8px;
     }
 
-    .legend-close {
-      background: none;
-      border: none;
-      font-size: 24px;
-      line-height: 1;
-      color: #adb5bd;
-      cursor: pointer;
-      padding: 0;
-      width: 24px;
-      height: 24px;
+    .dataset-legend-card .legend-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .dataset-legend-card .legend-item {
       display: flex;
       align-items: center;
-      justify-content: center;
-      transition: color 0.2s ease;
-    }
-
-    .legend-close:hover {
-      color: #212529;
-    }
-
-    .legend-items {
-      padding: 12px 16px;
-    }
-
-    .legend-item {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px;
+      gap: 6px;
       font-size: 13px;
+      color: #495057;
     }
 
-    .legend-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .legend-symbol {
-      margin-right: 10px;
+    .dataset-legend-card .legend-symbol {
       flex-shrink: 0;
     }
 
-    .legend-symbol.circle {
-      width: 12px;
-      height: 12px;
+    .dataset-legend-card .legend-symbol.circle {
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
     }
 
-    .legend-symbol.square {
+    .dataset-legend-card .legend-symbol.square {
+      width: 9px;
+      height: 9px;
+    }
+
+    .dataset-legend-card .legend-symbol.triangle-down {
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 9px solid;
+    }
+
+    .dataset-legend-card .legend-symbol.arrow-right {
+      width: 0;
+      height: 0;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 8px solid;
+    }
+
+    .dataset-legend-card .legend-symbol.cross {
       width: 10px;
       height: 10px;
-    }
-
-    .legend-symbol.triangle-down {
-      width: 0;
-      height: 0;
-      border-left: 6px solid transparent;
-      border-right: 6px solid transparent;
-      border-top: 10px solid;
-    }
-
-    .legend-symbol.arrow-right {
-      width: 0;
-      height: 0;
-      border-top: 5px solid transparent;
-      border-bottom: 5px solid transparent;
-      border-left: 10px solid;
-    }
-
-    .legend-symbol.cross {
-      width: 12px;
-      height: 12px;
       position: relative;
       transform: rotate(45deg);
       display: inline-block;
     }
 
-    .legend-symbol.cross::before,
-    .legend-symbol.cross::after {
+    .dataset-legend-card .legend-symbol.cross::before,
+    .dataset-legend-card .legend-symbol.cross::after {
       content: '';
       position: absolute;
       background-color: currentColor;
     }
 
-    .legend-symbol.cross::before {
-      width: 12px;
+    .dataset-legend-card .legend-symbol.cross::before {
+      width: 10px;
       height: 2px;
-      top: 5px;
+      top: 4px;
       left: 0;
     }
 
-    .legend-symbol.cross::after {
+    .dataset-legend-card .legend-symbol.cross::after {
       width: 2px;
-      height: 12px;
+      height: 10px;
       top: 0;
-      left: 5px;
-    }
-
-    .legend-label {
-      color: #495057;
-      font-weight: 400;
+      left: 4px;
     }
 
     @media (max-width: 640px) {
-      .dataset-legend {
-        bottom: 15px;
-        right: 15px;
+      .dataset-legend-card {
+        padding: 12px 16px;
+        gap: 12px;
       }
 
-      .legend-toggle {
-        width: 44px;
-        height: 44px;
-      }
-
-      .legend-content {
-        width: 200px;
+      .dataset-legend-card .legend-items {
+        gap: 12px;
       }
     }
   </style>
@@ -766,6 +677,33 @@
 
     <section class="section" id="strategies">
       <h2>📊 Strategies &amp; Model Comparisons</h2>
+
+      <!-- Dataset Legend Card -->
+      <div class="dataset-legend-card">
+        <span class="legend-title">📊 Datasets:</span>
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="legend-symbol cross" style="color: #d62728;"></span>
+            <span>MMAR</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol circle" style="background-color: #1f77b4;"></span>
+            <span>SAKURA Animal</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol triangle-down" style="border-top-color: #2ca02c;"></span>
+            <span>SAKURA Emotion</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol square" style="background-color: #ff7f0e;"></span>
+            <span>SAKURA Gender</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-symbol arrow-right" style="border-left-color: #9467bd;"></span>
+            <span>SAKURA Language</span>
+          </div>
+        </div>
+      </div>
 
       <div class="accordion">
         <!-- Strategy 1: Adding Mistakes -->
@@ -1744,89 +1682,7 @@
         });
       });
     });
-    // Dataset Legend Functionality
-    (function () {
-      var legend = document.getElementById('dataset-legend');
-      var toggleBtn = document.getElementById('legend-toggle');
-      var closeBtn = document.getElementById('legend-close');
-      var isExpanded = localStorage.getItem('legendExpanded') === 'true';
-
-      // Set initial state
-      if (isExpanded) {
-        legend.classList.add('expanded');
-      }
-
-      // Toggle expand/collapse
-      function toggleLegend() {
-        legend.classList.toggle('expanded');
-        var nowExpanded = legend.classList.contains('expanded');
-        localStorage.setItem('legendExpanded', nowExpanded);
-      }
-
-      toggleBtn.addEventListener('click', toggleLegend);
-      closeBtn.addEventListener('click', toggleLegend);
-
-      // Show legend when any strategy accordion is expanded
-      var accordionHeaders = document.querySelectorAll('#strategies .accordion-header');
-
-      function checkAccordions() {
-        var anyExpanded = Array.from(accordionHeaders).some(function (header) {
-          return header.getAttribute('aria-expanded') === 'true';
-        });
-
-        if (anyExpanded) {
-          legend.classList.remove('hidden');
-        } else {
-          legend.classList.add('hidden');
-        }
-      }
-
-      // Listen for accordion clicks
-      accordionHeaders.forEach(function (header) {
-        header.addEventListener('click', function () {
-          // Small delay to let accordion state update
-          setTimeout(checkAccordions, 50);
-        });
-      });
-
-      // Initial check
-      checkAccordions();
-    })();
   </script>
-  <!-- Floating Dataset Legend -->
-  <div id="dataset-legend" class="dataset-legend hidden">
-    <button class="legend-toggle" id="legend-toggle" aria-label="Toggle dataset legend">
-      <span class="toggle-icon">📊</span>
-    </button>
-    <div class="legend-content" id="legend-content">
-      <div class="legend-header">
-        <h4>Datasets</h4>
-        <button class="legend-close" id="legend-close" aria-label="Close legend">×</button>
-      </div>
-      <div class="legend-items">
-        <div class="legend-item">
-          <span class="legend-symbol cross" style="color: #d62728;"></span>
-          <span class="legend-label">MMAR</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-symbol circle" style="background-color: #1f77b4;"></span>
-          <span class="legend-label">SAKURA Animal</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-symbol triangle-down" style="border-top-color: #2ca02c;"></span>
-          <span class="legend-label">SAKURA Emotion</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-symbol square" style="background-color: #ff7f0e;"></span>
-          <span class="legend-label">SAKURA Gender</span>
-        </div>
-        <div class="legend-item">
-          <span class="legend-symbol arrow-right" style="border-left-color: #9467bd;"></span>
-          <span class="legend-label">SAKURA Language</span>
-        </div>
-      </div>
-    </div>
-  </div>
 </body>
 
 </html>
