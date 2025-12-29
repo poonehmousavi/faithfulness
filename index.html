@@ -860,9 +860,9 @@
                     <div class="figure-title">SALMONN 7B</div>
                     <div class="model-chip salmonn-7b">SALMONN 7B 🟢</div>
                   </div>
-                  <!-- TODO: Uncomment when figure is ready -->
-                  <!-- <img src="figures/adding_mistakes/external_llm/cross_dataset_adding_mistakes_salmonn_7b-restricted-mistral.png" alt="Adding mistakes – SALMONN 7B (Mistral)" /> -->
-                  <div class="placeholder-img">📊 Plot coming soon</div>
+                  <img
+                    src="figures/adding_mistakes/external_llm/cross_dataset_adding_mistakes_combined_salmonn_7b-restricted-mistral.png"
+                    alt="Adding mistakes – SALMONN 7B (Mistral)" />
                 </div>
               </div>
             </div>
@@ -957,9 +957,9 @@
                     <div class="figure-title">SALMONN 7B</div>
                     <div class="model-chip salmonn-7b">SALMONN 7B 🟢</div>
                   </div>
-                  <!-- TODO: Uncomment when figure is ready -->
-                  <!-- <img src="figures/paraphrasing/external_llm/cross_dataset_paraphrasing_salmonn_7b-restricted-mistral.png" alt="Paraphrasing – SALMONN 7B (Mistral)" /> -->
-                  <div class="placeholder-img">📊 Plot coming soon</div>
+                  <img
+                    src="figures/paraphrasing/external_llm/cross_dataset_paraphrasing_combined_salmonn_7b-restricted-mistral.png"
+                    alt="Paraphrasing – SALMONN 7B (Mistral)" />
                 </div>
               </div>
             </div>
@@ -1749,7 +1749,6 @@
       var legend = document.getElementById('dataset-legend');
       var toggleBtn = document.getElementById('legend-toggle');
       var closeBtn = document.getElementById('legend-close');
-      var strategiesSection = document.getElementById('strategies');
       var isExpanded = localStorage.getItem('legendExpanded') === 'true';
 
       // Set initial state
@@ -1767,23 +1766,31 @@
       toggleBtn.addEventListener('click', toggleLegend);
       closeBtn.addEventListener('click', toggleLegend);
 
-      // Auto-show when in Strategies section
-      var observer = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              legend.classList.remove('hidden');
-            } else {
-              legend.classList.add('hidden');
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
+      // Show legend when any strategy accordion is expanded
+      var accordionHeaders = document.querySelectorAll('#strategies .accordion-header');
 
-      if (strategiesSection) {
-        observer.observe(strategiesSection);
+      function checkAccordions() {
+        var anyExpanded = Array.from(accordionHeaders).some(function (header) {
+          return header.getAttribute('aria-expanded') === 'true';
+        });
+
+        if (anyExpanded) {
+          legend.classList.remove('hidden');
+        } else {
+          legend.classList.add('hidden');
+        }
       }
+
+      // Listen for accordion clicks
+      accordionHeaders.forEach(function (header) {
+        header.addEventListener('click', function () {
+          // Small delay to let accordion state update
+          setTimeout(checkAccordions, 50);
+        });
+      });
+
+      // Initial check
+      checkAccordions();
     })();
   </script>
   <!-- Floating Dataset Legend -->
